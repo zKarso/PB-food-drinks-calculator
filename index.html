@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PB Food & Drinks Calculator</title>
+<style>
+body {
+  font-family: "Orbitron", sans-serif;
+  background: radial-gradient(circle at top left, #050505, #000);
+  color: #f0f0f0;
+  margin: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  max-width: 600px;
+  width: 100%;
+  background: rgba(15,15,15,0.85);
+  border: 2px solid #00ff88;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 0 25px #00ff8840;
+}
+
+/* Title style */
+h1 {
+  color: #ffcc00;
+  text-align: center;
+  font-size: 1.6em;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-shadow: 0 0 10px #ffcc00;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #00ff8850;
+  text-align: left;
+}
+
+th {
+  color: #ffcc00;
+  font-size: 1.1em;
+  text-shadow: 0 0 10px #ffcc00;
+}
+
+input {
+  width: 80px;
+  text-align: center;
+  padding: 6px;
+  border: 1px solid #00ff88;
+  border-radius: 5px;
+  background: #111;
+  color: #fff;
+  box-shadow: 0 0 10px #00ff8820 inset;
+}
+
+button {
+  background: #00ff88;
+  color: #111;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-family: "Orbitron", sans-serif;
+  font-size: 1em;
+  width: 100%;
+  margin-top: 10px;
+  text-transform: uppercase;
+  box-shadow: 0 0 20px #00ff88;
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  background: #00ffaa;
+  box-shadow: 0 0 25px #00ffaa;
+}
+
+.results {
+  margin-top: 15px;
+  background: #1a1a1a;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #00ff8850;
+  box-shadow: 0 0 15px #00ff8820 inset;
+}
+
+.item-line {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 1.05em;
+}
+
+.discount-label {
+  color: #00bfff;
+  font-weight: bold;
+  margin-left: 10px;
+  font-size: 0.9em;
+}
+
+.discount-details {
+  color: #00bfff;
+  font-size: 0.95em;
+  margin-top: 10px;
+  line-height: 1.4;
+}
+
+.total-line {
+  margin-top: 10px;
+  font-weight: bold;
+  font-size: 1.15em;
+  color: #ffcc00;
+}
+
+.grand-total {
+  margin-top: 20px;
+  font-size: 2.8em;
+  font-weight: bold;
+  color: #00ff88;
+  background: rgba(0,255,136,0.1);
+  border-radius: 10px;
+  text-align: center;
+  padding: 15px 0;
+  border: 2px solid #00ff88;
+  box-shadow: 0 0 15px #00ff8820;
+}
+
+.footer {
+  text-align: center;
+  color: #888;
+  font-size: 0.8em;
+  margin-top: 20px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🍴 PB Food & Drinks Calculator</h1>
+
+<table>
+  <tr><th>Item</th><th>Price</th><th>Qty</th></tr>
+  <!-- Food Items -->
+  <tr><td>Ven Pongal</td><td>3450</td><td><input type="number" id="q1" value="0"></td></tr>
+  <tr><td>Mutton Haalem</td><td>3350</td><td><input type="number" id="q2" value="0"></td></tr>
+  <tr><td>Mutton Mandhi</td><td>3150</td><td><input type="number" id="q3" value="0"></td></tr>
+  <!-- Drink Items -->
+  <tr><td>Siluku Paal</td><td>2900</td><td><input type="number" id="q4" value="0"></td></tr>
+  <tr><td>Mocktail</td><td>3000</td><td><input type="number" id="q5" value="0"></td></tr>
+  <tr><td>Elaneer Payasam</td><td>2900</td><td><input type="number" id="q6" value="0"></td></tr>
+</table>
+
+<button onclick="calculate()">Calculate Total</button>
+
+<div class="results">
+  <div id="summary"></div>
+  <div id="discountDetails" class="discount-details"></div>
+  <div id="totalBefore" class="total-line"></div>
+  <div id="totalDiscount" class="total-line"></div>
+  <div id="grandTotal" class="grand-total">₹0</div>
+</div>
+
+<div class="footer">© PB Restaurant Utility | SJ Edition⚡</div>
+</div>
+
+<script>
+const items = [
+  { name: "Ven Pongal", price: 3450, type: "food" },
+  { name: "Mutton Haalem", price: 3350, type: "food" },
+  { name: "Mutton Mandhi", price: 3150, type: "food" },
+  { name: "Siluku Paal", price: 2900, type: "drink" },
+  { name: "Mocktail", price: 3000, type: "drink" },
+  { name: "Elaneer Payasam", price: 2900, type: "drink" }
+];
+
+function calculate() {
+  let totalBefore = 0;
+  let summaryHTML = '';
+  let totalFoodQty = 0;
+  let totalDrinkQty = 0;
+
+  for (let i=0;i<items.length;i++){
+    const qtyField = document.getElementById(`q${i+1}`);
+    const qty = parseInt(qtyField.value) || 0;
+    if(qty>0){
+      let itemTotal = qty*items[i].price;
+      summaryHTML += `<div class="item-line">${qty}x ${items[i].name}: ₹${itemTotal.toLocaleString()}</div>`;
+      totalBefore += itemTotal;
+      qtyField.value = '';
+
+      if(items[i].type === "food") totalFoodQty += qty;
+      if(items[i].type === "drink") totalDrinkQty += qty;
+    }
+  }
+
+  // Discount eligibility: BOTH food and drink >= 250
+  const discountEligible = (totalFoodQty >= 250 && totalDrinkQty >= 250);
+  const totalDiscount = discountEligible ? totalBefore * 0.10 : 0;
+  const grandTotal = totalBefore - totalDiscount;
+
+  document.getElementById("summary").innerHTML = summaryHTML || 'No items selected';
+  document.getElementById("discountDetails").innerHTML = discountEligible ? 
+    `Discount Applied: 10% off ₹${totalDiscount.toLocaleString()}` : 'No discounts applied';
+  document.getElementById("totalBefore").innerText = `Total Before Discount: ₹${totalBefore.toLocaleString()}`;
+  document.getElementById("totalDiscount").innerText = `Total Discount: -₹${totalDiscount.toLocaleString()}`;
+  document.getElementById("grandTotal").innerText = `Grand Total: ₹${grandTotal.toLocaleString()}`;
+}
+</script>
+</body>
+</html>
